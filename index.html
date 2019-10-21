@@ -6,182 +6,179 @@
   <title>getUserMedia-Demo</title>
 </head>
 <body>
-<hr>
-  <div style="background-color : #AAEEDD"><h1>JavaScriptで撮るスクリーンショット</h1></div>
   <div id="target"> 
-  <div>
-    <video id="v" style="background-color: #000" //autoplay ></video>
-  </div>
-  <button id="s">start</button>
-<script id="jsbin-javascript">
-if (typeof navigator.mediaDevices.getUserMedia !== 'function') {
-  const err = new Error('getUserMedia()が利用できないブラウザです！');
-  alert(`${err.name} ${err.message}`);
-  throw err;
-}
-
-const $start = document.getElementById('s');
-const $video = document.getElementById('v');
-
-$start.addEventListener('click', () => {
-  navigator.mediaDevices.getUserMedia({ video: true, audio: false })
-    .then(stream => $video.srcObject = stream)
-    .catch(err => alert(`${err.name} ${err.message}`));
-}, false);
-</script>
-
-<script>
-
-            //------------------------------
-            //桜吹雪
-            //------------------------------
-
-            function Particle(){ };
-            Particle.prototype.x = 0;
-            Particle.prototype.y = 0;
-            Particle.prototype.velX = 0;
-            Particle.prototype.velY = 0;
-            Particle.prototype.rad = 0;
-            Particle.prototype.w = 0;
-            Particle.prototype.time = 0;
-            Particle.prototype.zrot = 0;
-            Particle.prototype.zrotW = 0;
-            Particle.prototype.scale = 1;
-
-            var stageX = 445;
-            var stageY = 445;
-
-            var mainCanvasContext;
-
-            var particles = new Array();
-
-            var mouseX = 0;
-            var mouseY = 0;
-
-            var windVelX = 0;
-            var windVelY = 0;
-
-            var image = new Image();
-            image.src = "sakura_hana.png";//花びら
-            function initParitcle(initP){
-                initP.w = 0.4*(0.5-Math.random());
-                initP.rad = Math.PI*Math.random();
-                initP.velY = Math.random()*3+7;
-                initP.velX = (0.5-Math.random())*10;
-                initP.zrot = Math.PI*Math.random();
-                initP.zrotW = (0.5-Math.random())/10;
-                initP.scale = (1.1-Math.random())*3.5;//花びらの大きさ｜デフォ4.5
-                initP.time = 0;
-
-            }
-
-            function init(){
-                for(var i = 0 ; i < 50 ; i++){//花びらの数
-                    var p = new Particle();
-                    initParitcle(p);
-                    p.y = (1.1-1.2*Math.random())*stageY;
-                    p.x = Math.random()*stageX;
-
-                    particles.push(p);
+    <video id="v" style="background-color: #000"  ></video>
+    
+        <script>
+    
+                //------------------------------
+                //桜吹雪
+                //------------------------------
+    
+                function Particle(){ };
+                Particle.prototype.x = 0;
+                Particle.prototype.y = 0;
+                Particle.prototype.velX = 0;
+                Particle.prototype.velY = 0;
+                Particle.prototype.rad = 0;
+                Particle.prototype.w = 0;
+                Particle.prototype.time = 0;
+                Particle.prototype.zrot = 0;
+                Particle.prototype.zrotW = 0;
+                Particle.prototype.scale = 1;
+    
+                var stageX = 445;
+                var stageY = 445;
+    
+                var mainCanvasContext;
+    
+                var particles = new Array();
+    
+                var mouseX = 0;
+                var mouseY = 0;
+    
+                var windVelX = 0;
+                var windVelY = 0;
+    
+                var image = new Image();
+                image.src = "sakura_hana.png";//花びら
+                function initParitcle(initP){
+                    initP.w = 0.4*(0.5-Math.random());
+                    initP.rad = Math.PI*Math.random();
+                    initP.velY = Math.random()*3+7;
+                    initP.velX = (0.5-Math.random())*10;
+                    initP.zrot = Math.PI*Math.random();
+                    initP.zrotW = (0.5-Math.random())/10;
+                    initP.scale = (1.1-Math.random())*3.5;//花びらの大きさ｜デフォ4.5
+                    initP.time = 0;
+    
                 }
-            };
-
-
-            function sortParticle(p1,p2){
-                return(p1.scale-p2.scale);
-            }
-
-
-            function timerFunc( ){
-                mainCanvasContext.setTransform(1,0,0,1,0,0);
-                //mainCanvasContext.fillStyle = 'rgba(86, 14, 17, 0.4)';
-                mainCanvasContext.fillRect(0, 0, stageX, stageY);
-                mainCanvasContext.clearRect(0,0,stageX,stageY);
-                particles.sort(sortParticle);
-                for(var i = 0 ; i<particles.length; i++){
-                    var p = particles[i];
-                    var rad = p.rad;
-                    mainCanvasContext.setTransform(Math.cos(rad), Math.sin(rad), -Math.sin(rad), Math.cos(rad), p.x+image.width*0.5, p.y+image.height*0.5 );
-                    var s = Math.sin(p.zrot);
-                    var c = Math.cos(p.zrot);
-                    mainCanvasContext.scale(p.scale*s,p.scale*c);
-                    mainCanvasContext.drawImage( image,
-                                                0, 0,
-                                                image.width, image.height ,
-                                                -image.width*0.5,-image.height*0.5,
-                                                image.width,image.height
-                                               );
-                    p.time ++;
-                    p.x+=(p.velX+ windVelX)*(p.scale/3) ;
-                    p.y+=(p.velY+windVelY)*(Math.abs(p.scale)/3);
-                    p.rad+=p.w;
-                    p.zrot+=p.zrotW;
-                    if(p.rad > Math.PI){
-                        p.rad = -Math.PI;
-                    }else if(p.rad < -Math.PI){
-                        p.rad = Math.PI;
-                    }
-                    var ts = image.width*Math.abs(p.scale);
-                    if(p.y>stageY+ts||p.x<-ts||p.x>ts+stageX){
+    
+                function init(){
+                    for(var i = 0 ; i < 50 ; i++){//花びらの数
+                        var p = new Particle();
                         initParitcle(p);
-                        ts = image.width*Math.abs(p.scale)
-                        if(p.y>stageY+ts){
-                            p.y = -ts;
-                            p.x = Math.random()*stageX;
-                        }else{
-                            if((p.velX+ windVelX)*(p.scale/3)>0){
-                                p.x = -ts;
-                            }else{
-                                p.x = stageX+ts;
-                            }
-                        }
-
+                        p.y = (1.1-1.2*Math.random())*stageY;
+                        p.x = Math.random()*stageX;
+    
+                        particles.push(p);
                     }
-
-                }
-
-            }
-
-
-            window.onload = function(){
-
-                var timer = setInterval(timerFunc,30);
-
-                //レイヤー3（桜吹雪）
-                var canvas3 = document.createElement('canvas');
-
-                document.body.appendChild(canvas3);
-
-                mainCanvasContext = canvas3.getContext("2d");
-
-                canvas3.width = 300;
-                canvas3.height = 150;
-
-                canvas3.style.position = "absolute";
-                canvas3.style.top = "0";
-                canvas3.style.left = "0";
-                canvas3.style.zIndex = "2";
-
-                stageX = canvas3.width;
-                stageY = canvas3.height;
-                init();
-
-                canvas3.onmousemove = function(e){//マウスの動き
-                    mouseX=e.clientX;
-                    mouseY=e.clientY;
-                    windVelX = (0.5 - mouseX / stageX)*35;
-                    windVelY = (0.6 - mouseY / stageY)*15;
                 };
-
-            };
-
-
-        </script>
-
-  
-  <h2>導入方法と処理概要</h2>
+    
+    
+                function sortParticle(p1,p2){
+                    return(p1.scale-p2.scale);
+                }
+    
+    
+                function timerFunc( ){
+                    mainCanvasContext.setTransform(1,0,0,1,0,0);
+                    //mainCanvasContext.fillStyle = 'rgba(86, 14, 17, 0.4)';
+                    mainCanvasContext.fillRect(0, 0, stageX, stageY);
+                    mainCanvasContext.clearRect(0,0,stageX,stageY);
+                    particles.sort(sortParticle);
+                    for(var i = 0 ; i<particles.length; i++){
+                        var p = particles[i];
+                        var rad = p.rad;
+                        mainCanvasContext.setTransform(Math.cos(rad), Math.sin(rad), -Math.sin(rad), Math.cos(rad), p.x+image.width*0.5, p.y+image.height*0.5 );
+                        var s = Math.sin(p.zrot);
+                        var c = Math.cos(p.zrot);
+                        mainCanvasContext.scale(p.scale*s,p.scale*c);
+                        mainCanvasContext.drawImage( image,
+                                                    0, 0,
+                                                    image.width, image.height ,
+                                                    -image.width*0.5,-image.height*0.5,
+                                                    image.width,image.height
+                                                  );
+                        p.time ++;
+                        p.x+=(p.velX+ windVelX)*(p.scale/3) ;
+                        p.y+=(p.velY+windVelY)*(Math.abs(p.scale)/3);
+                        p.rad+=p.w;
+                        p.zrot+=p.zrotW;
+                        if(p.rad > Math.PI){
+                            p.rad = -Math.PI;
+                        }else if(p.rad < -Math.PI){
+                            p.rad = Math.PI;
+                        }
+                        var ts = image.width*Math.abs(p.scale);
+                        if(p.y>stageY+ts||p.x<-ts||p.x>ts+stageX){
+                            initParitcle(p);
+                            ts = image.width*Math.abs(p.scale)
+                            if(p.y>stageY+ts){
+                                p.y = -ts;
+                                p.x = Math.random()*stageX;
+                            }else{
+                                if((p.velX+ windVelX)*(p.scale/3)>0){
+                                    p.x = -ts;
+                                }else{
+                                    p.x = stageX+ts;
+                                }
+                            }
+    
+                        }
+    
+                    }
+    
+                }
+    
+    
+                window.onload = function(){
+    
+                    var timer = setInterval(timerFunc,30);
+    
+                    //レイヤー3（桜吹雪）
+                    var canvas3 = document.createElement('canvas');
+    
+                    document.body.appendChild(canvas3);
+    
+                    mainCanvasContext = canvas3.getContext("2d");
+    
+                    canvas3.width = 300;
+                    canvas3.height = 150;
+    
+                    canvas3.style.position = "absolute";
+                    canvas3.style.top = "0";
+                    canvas3.style.left = "0";
+                    canvas3.style.zIndex = "2";
+    
+                    stageX = canvas3.width;
+                    stageY = canvas3.height;
+                    init();
+    
+                    canvas3.onmousemove = function(e){//マウスの動き
+                        mouseX=e.clientX;
+                        mouseY=e.clientY;
+                        windVelX = (0.5 - mouseX / stageX)*35;
+                        windVelY = (0.6 - mouseY / stageY)*15;
+                    };
+    
+                };
+    
+    
+            </script>
 
   </div>
+          <button id="s">start</button>
+          <script id="jsbin-javascript">
+              if (typeof navigator.mediaDevices.getUserMedia !== 'function') {
+                const err = new Error('getUserMedia()が利用できないブラウザです！');
+                alert(`${err.name} ${err.message}`);
+                throw err;
+                }
+    
+              const $start = document.getElementById('s');
+              const $video = document.getElementById('v');
+              
+              $start.addEventListener('click', () => {
+                navigator.mediaDevices.getUserMedia({ video: true{
+    facingMode: {
+      exact: "environment"
+    }
+  }, audio: false })
+                  .then(stream => $video.srcObject = stream)
+                  .catch(err => alert(`${err.name} ${err.message}`));
+              }, false);
+          </script>
   <br>
   <hr>
   <h3>↓↓ここから画像↓↓　（上の対象のDIVを画像化）<h3>
