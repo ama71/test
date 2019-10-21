@@ -9,24 +9,10 @@
 
           
    <div id="target">
+   <div>
     <video id="v" style="background-color: #000"  ></video>
-        <button id="s">start</button>
-          <script id="jsbin-javascript">
-        if (typeof navigator.mediaDevices.getUserMedia !== 'function') {
-          const err = new Error('getUserMedia()が利用できないブラウザです！');
-          alert(`${err.name} ${err.message}`);
-          throw err;
-          }
-
-        const $start = document.getElementById('s');
-        const $video = document.getElementById('v');
-        
-        $start.addEventListener('click', () => {
-          navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } , audio: false })
-            .then(stream => $video.srcObject = stream)
-            .catch(err => alert(`${err.name} ${err.message}`));
-        }, false);
-    </script>
+    <div/>
+       
       
           
         <script>
@@ -177,7 +163,23 @@
             </script>
 
   </div>
+ <button id="s">start</button>
+          <script id="jsbin-javascript">
+        if (typeof navigator.mediaDevices.getUserMedia !== 'function') {
+          const err = new Error('getUserMedia()が利用できないブラウザです！');
+          alert(`${err.name} ${err.message}`);
+          throw err;
+          }
 
+        const $start = document.getElementById('s');
+        const $video = document.getElementById('v');
+        
+        $start.addEventListener('click', () => {
+          navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } , audio: false })
+            .then(stream => $video.srcObject = stream)
+            .catch(err => alert(`${err.name} ${err.message}`));
+        }, false);
+    </script>
           
   <br>
   <hr>
