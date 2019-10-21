@@ -6,8 +6,11 @@
   <title>getUserMedia-Demo</title>
 </head>
 <body>
+<hr>
+  <div style="background-color : #AAEEDD"><h1>JavaScriptで撮るスクリーンショット</h1></div>
+  <div id="target"> 
   <div>
-    <video id="v" style="background-color: #000" autoplay></video>
+    <video id="v" style="background-color: #000" //autoplay ></video>
   </div>
   <button id="s">start</button>
 <script id="jsbin-javascript">
@@ -26,6 +29,7 @@ $start.addEventListener('click', () => {
     .catch(err => alert(`${err.name} ${err.message}`));
 }, false);
 </script>
+
 <script>
 
             //------------------------------
@@ -173,5 +177,58 @@ $start.addEventListener('click', () => {
 
 
         </script>
+
+  
+  <h2>導入方法と処理概要</h2>
+
+  </div>
+  <br>
+  <hr>
+  <h3>↓↓ここから画像↓↓　（上の対象のDIVを画像化）<h3>
+  <img src="" id="result" />
+  <h3>↑↑ここまで画像↑↑</h3>
+
+  <hr>
+
+  <a href="" id="ss" download="html_ss.png">スクリーンショット(document.body全体)をダウンロード</a>
+
+  <hr>
+  <h3>注意</h3>
+  <ul>
+    <li>実際にはスクリーンショットを撮っているわけではない</li>
+    <li>html2canvasは、HTML内のDOMやCSSを解釈してCanvas上に描画するライブラリ</li>
+    <li>つまり、レンダリングエンジンに近い動作をする</li>
+    <li>そのため、ブラウザと異なる表示がされる場合がある</li>
+    <li>flashやapplet,iframe（別URL）はうまくキャプチャできない</li>
+  </ul>
+  </div>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
+  <script>
+    //ロードされた際の処理として実施：
+    window.onload = function(){
+
+      //HTML内に画像を表示
+      html2canvas(document.getElementById("target"),{
+        onrendered: function(canvas){
+          //imgタグのsrcの中に、html2canvasがレンダリングした画像を指定する。
+          var imgData = canvas.toDataURL();
+          document.getElementById("result").src = imgData;
+        }
+      });
+
+      //ボタンを押下した際にダウンロードする画像を作る
+      html2canvas(document.body,{
+        onrendered: function(canvas){
+          //aタグのhrefにキャプチャ画像のURLを設定
+          var imgData = canvas.toDataURL();
+          document.getElementById("ss").href = imgData;
+        }
+      });
+
+    }
+  </script>
+
 </body>
 </html>
